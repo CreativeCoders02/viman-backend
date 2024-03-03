@@ -18,11 +18,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-d#ii2fioy0_=t4s$)87a3iu-*b%j3g03gh6@2cfc+s_1-n#+89'
 
 # SECURITY WARNING: don't run with debug turned on in production!
