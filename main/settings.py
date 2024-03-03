@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import dj_database_url
 from pathlib import Path
-
+from dotenv import load_dotenv
+from os import environ as env
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +29,8 @@ SECRET_KEY = 'django-insecure-d#ii2fioy0_=t4s$)87a3iu-*b%j3g03gh6@2cfc+s_1-n#+89
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["https://creativecoders.azurewebsites.net/", 'https://127.0.0.1' ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://creativecoders.azurewebsites.net/ ", 'https://127.0.0.1']
 
 
 # Application definition
@@ -38,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'storages',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -75,12 +82,20 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default':  dj_database_url.config(
+        default=env.get("DATABASE_URL"),
+        conn_max_age=600,)
+
 }
 
+STORAGES = {
+    "default": {
+        "BACKEND": "api.custom_azure.AzureMediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "api.custom_azure.AzureStaticStorage",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
