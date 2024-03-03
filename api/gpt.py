@@ -22,7 +22,7 @@ def getUserMessage(name):
     messages = [
         {
             "role": "system",
-            "content": "You just give a warm welcome to newly registered users in creative coders website.  User will give their name , you just need to respond to it. Just flatter the user"
+            "content": "You just give a warm welcome to newly registered users in creative coders website.  User will give their name, you just need to respond to it. Just flatter the user. The length should be atleast 300 characters."
         },
         {
             "role": "user",

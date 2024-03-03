@@ -5,4 +5,4 @@ from .models import TestModel
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestModel
-        fields = ["name", "message", "image"]
+        fields = ["name", "emailId"]
