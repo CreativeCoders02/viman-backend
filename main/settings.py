@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
-    "https://creativecoders.azurewebsites.net/ ", 'https://127.0.0.1']
+    "https://creativecoders.azurewebsites.net", 'https://127.0.0.1']
 
 
 # Application definition
