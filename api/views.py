@@ -50,11 +50,10 @@ class SlotView(APIView):
 
     def post(self, request, format=None):
         serializer = SlotPostSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid():                                                                
             serializer.save()
 
             data = serializer.data
-            print(data)
 
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -63,8 +62,8 @@ class SlotView(APIView):
 class RequestView(APIView):
     queryset = Request.objects.all()
     serializer_class = RequestGetSerializer
-    authentication_classes = [TokenAuthentication,BasicAuthentication,SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication,BasicAuthentication,SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         requests = Request.objects.all()

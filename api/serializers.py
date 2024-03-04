@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TestModel, Slot, Request, Proof,Room
+from .models import TestModel, Slot, Request, Proof,Room,Student
 from django.contrib.auth.models import User
 
 
@@ -35,11 +35,21 @@ class ProofSerializer(serializers.ModelSerializer):
         fields = ["image"]
 
 
+class StudentSerializer(serializers.ModelSerializer):
+    # proof = ProofSerializer(many=True)
+    class Meta:
+        model = Student
+        fields = ["username","first_name","last_name"]
+
 class RequestGetSerializer(serializers.ModelSerializer):
-    proofs = ProofSerializer(many=True)
+    # proof = ProofSerializer(many=True)
+    student =StudentSerializer()
     class Meta:
         model = Request
-        fields = ["id", "student", "slot", "items", "status", "proofs"]
+        fields = ["id", "student", "slot", "items", "status","student" ]
+
+
+
 
 
 class UserSerializer(serializers.ModelSerializer):
