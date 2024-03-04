@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import PredictionAPIView
+from .views import TestView, SlotView,RequestView,LoginView
 
 urlpatterns = [
-    path('', PredictionAPIView.as_view(), name="Predict Parkinson's Disease"),
+    path('test', TestView.as_view(), name="Test"),
+    path('slot', SlotView.as_view(), name="Slot View"),
+    path('request', RequestView.as_view(), name="Request View"),
+    path('login', LoginView.as_view(), name="Login View"),
 ]
