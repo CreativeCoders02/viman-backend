@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TestView, SlotView,RequestView,LoginView,ProofView
+from .views import TestView, SlotView, RequestView, LoginView, ProofView, RoomView
 
 urlpatterns = [
     path('test', TestView.as_view(), name="Test"),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('request', RequestView.as_view(), name="Request View"),
     path('login', LoginView.as_view(), name="Login View"),
     path('proof', ProofView.as_view(), name="Proof View"),
+    path('room', RoomView.as_view(), name="Room View"),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TestModel, Slot, Request, Proof,Room,Student
+from .models import TestModel, Slot, Request, Proof, Room, Student
 from django.contrib.auth.models import User
 
 
@@ -10,23 +10,25 @@ class TestSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Room
-        fields = ["room_number", "block_number"]
+        fields = ["id", "room_number", "block_number"]
+
 
 class SlotPostSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Slot
         fields = ["room", "start_time", "end_time"]
+
 
 class SlotGetSerializer(serializers.ModelSerializer):
     room = RoomSerializer()
+
     class Meta:
         model = Slot
-        fields = ["room", "start_time", "end_time"]
-
+        fields = ["id", "room", "start_time", "end_time"]
 
 
 class ProofSerializer(serializers.ModelSerializer):
@@ -39,17 +41,23 @@ class StudentSerializer(serializers.ModelSerializer):
     # proof = ProofSerializer(many=True)
     class Meta:
         model = Student
-        fields = ["username","first_name","last_name"]
+        fields = ["username", "first_name", "last_name"]
+
 
 class RequestGetSerializer(serializers.ModelSerializer):
     # proof = ProofSerializer(many=True)
-    student =StudentSerializer()
+    student = StudentSerializer()
+    slot = SlotGetSerializer()
+
     class Meta:
         model = Request
-        fields = ["id", "student", "slot", "items", "status","student" ]
+        fields = ["id", "student", "slot", "items", "status", "student"]
 
 
-
+class RequestPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = ["slot", "items",]
 
 
 class UserSerializer(serializers.ModelSerializer):

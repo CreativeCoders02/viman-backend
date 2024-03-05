@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import TestModel, Slot, Request, Proof
-from .serializers import TestSerializer, SlotPostSerializer, RequestGetSerializer, SlotGetSerializer, UserSerializer, ProofSerializer
+from .models import TestModel, Slot, Request, Proof, Room, Student, Request as SlotRequest
+from .serializers import TestSerializer, SlotPostSerializer, RequestGetSerializer, SlotGetSerializer, UserSerializer, ProofSerializer, RoomSerializer, RequestPostSerializer
 from .gpt import getUserMessage
 from .mail.push_mail import push_mail
 
@@ -62,24 +62,46 @@ class SlotView(APIView):
 
 class RequestView(APIView):
     queryset = Request.objects.all()
-    serializer_class = RequestGetSerializer
+    serializer_class = RequestPostSerializer
     # authentication_classes = [TokenAuthentication,BasicAuthentication,SessionAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
+
+        username = request.query_params.get("username")
+        print(username)
+
+        if username:
+            student = Student.objects.get(username=username)
+
+            requests = Request.objects.filter(student=student)
+            serializer = RequestGetSerializer(requests, many=True)
+            return Response(serializer.data)
+
+
         requests = Request.objects.all()
+
         serializer = RequestGetSerializer(requests, many=True)
+
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = RequestGetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
 
-            data = serializer.data
-            # Perform any additional logic or operations here
+        slotNumber = request.data["slot"]
+        username = request.data["username"]
+        items = request.data["items"]
 
-            return Response(data, status=status.HTTP_201_CREATED)
+        slot = Slot.objects.get(id=slotNumber)
+        student = Student.objects.get(username=username)
+
+        if student and items and slot:
+            req = SlotRequest(student=student, slot=slot,
+                              items=items, status="Pending")
+            req.save()
+            serializer = RequestGetSerializer(req)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -107,12 +129,35 @@ class LoginView(APIView):
         if username:
             user = authenticate(username=username, password=password)
 
-        print("USER", user)
+        if not user:
+            return Response({'token': "", "message": "invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
     def get(self, request):
         return Response([])
+
+
+class RoomView(APIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    # authentication_classes = [TokenAuthentication,BasicAuthentication,SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        rooms = Room.objects.all()
+        serializer = RoomSerializer(rooms, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = RoomSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+
+            data = serializer.data
+
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProofView(APIView):
