@@ -1,17 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import TestModel, Slot, Request
-from .serializers import TestSerializer, SlotPostSerializer, RequestGetSerializer, SlotGetSerializer, UserSerializer
+from .models import TestModel, Slot, Request, Proof
+from .serializers import TestSerializer, SlotPostSerializer, RequestGetSerializer, SlotGetSerializer, UserSerializer, ProofSerializer
 from .gpt import getUserMessage
 from .mail.push_mail import push_mail
 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication,BasicAuthentication,BaseAuthentication,SessionAuthentication
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication, BaseAuthentication, SessionAuthentication
 from django.contrib.auth.models import User
-from django.contrib.auth import  authenticate
+from django.contrib.auth import authenticate
+
 
 class TestView(APIView):
     queryset = TestModel.objects.all()
@@ -50,7 +51,7 @@ class SlotView(APIView):
 
     def post(self, request, format=None):
         serializer = SlotPostSerializer(data=request.data)
-        if serializer.is_valid():                                                                
+        if serializer.is_valid():
             serializer.save()
 
             data = serializer.data
@@ -92,21 +93,21 @@ class LoginView(APIView):
         data = serializer.data
         user = None
 
-
         email = data["email"]
         username = data["username"]
         password = data["password"]
         if email:
             foundUser = User.objects.get(
                 email=email)
-            
+
             if foundUser:
-                user = authenticate(username=foundUser.username,password=password)
+                user = authenticate(
+                    username=foundUser.username, password=password)
 
         if username:
-            user =  authenticate(username=username,password=password)
+            user = authenticate(username=username, password=password)
 
-        print("USER",user)
+        print("USER", user)
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -114,3 +115,16 @@ class LoginView(APIView):
         return Response([])
 
 
+class ProofView(APIView):
+    queryset = Proof.objects.all()
+    serializer_class = ProofSerializer
+    # authentication_classes = [TokenAuthentication,BasicAuthentication,SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        if "requestId" not in request.query_params:
+            return Response([])
+        id = request.query_params["requestId"]
+        proofs = Proof.objects.filter(request=id)
+        serializer = ProofSerializer(proofs, many=True)
+        return Response(serializer.data)
