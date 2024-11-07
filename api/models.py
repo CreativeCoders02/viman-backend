@@ -22,7 +22,7 @@ class Room(models.Model):
 
 class Student(User):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    mobile_number = models.CharField(max_length=100)\
+    mobile_number = models.CharField(max_length=100)
 
 
 
