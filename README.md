@@ -43,13 +43,4 @@ This repository contains the **Django backend API** for the **Viman** project. I
    ```
    The API server will run at `http://localhost:8000`.
 
-## Endpoints Overview
 
-- **Authentication**: `/api/auth/`
-- **User Management**: `/api/users/`
-- **Proof Image Upload**: `/api/upload-proof/`
-- **Request Management**: `/api/requests/`
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
